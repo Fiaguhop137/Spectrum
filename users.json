@@ -191,10 +191,7 @@
         "pronouns": "try ~set or ~help",
         "color": "000000",
         "offenses": "11",
-        "roles": [
-            "infrared",
-            "ultraviolet"
-        ]
+        "roles": []
     },
     "1341471629007654985": {
         "name": "Elle/Ellis",
