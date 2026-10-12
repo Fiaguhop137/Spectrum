@@ -73,9 +73,7 @@
         "pronouns": "pro/nouns",
         "color": "FF99CC",
         "offenses": "3",
-        "roles": [
-            "infrared"
-        ]
+        "roles": []
     },
     "789314712990384168": {
         "name": "Ben",
