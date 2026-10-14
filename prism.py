@@ -1,4 +1,5 @@
 import discord,asyncio,os,json,re,cairosvg,shutil,subprocess,datetime
+from ollama import AsyncClient
 from time import perf_counter
 from dotenv import load_dotenv
 from zoneinfo import ZoneInfo
@@ -13,6 +14,7 @@ intents.presences=True
 intents.members=True
 intents.message_content=True
 prism=discord.Client(intents=intents)
+ollama=AsyncClient()
 spectrum_server_id=1511895185007579206
 spectrum_channel_id=1534523744779763823
 mod_channel_id=1534523821762281602
@@ -33,6 +35,12 @@ banned_words=[
     "amara",
     "zou",
 ]
+with open(__file__, "r", encoding="utf-8") as self:
+    prismprompt="You are a helpful assistant named Prism. Your job is to help users with their questions for the Spectrum discord server. Keep in mind that you should keep your responses concise and helpful. Here is how prism works: "+self.read()
+with open(USERS_FILE,"r",encoding="utf-8") as file:
+    prismprompt+=file.read()
+with open(ROLES_FILE,"r",encoding="utf-8") as file:
+    prismprompt+=file.read()
 banned_words=re.compile(r"\b(?:"+"|".join(map(re.escape,banned_words))+r")\b",re.IGNORECASE,)
 def load_users():
     try:
@@ -225,22 +233,31 @@ async def run_cmd(cmd:str,args:list,message:discord.Message):
     if cmd[0]!="~":return
     cmd=cmd.strip().lower()[1:]
     if cmd=="help":
-        await echo(
-            '```markdown\n'
-            ' ≈Available commands: \n'
-            ' ~help                                  - Show this help message\n'
-            ' ~ping                                  - Get the bot\'s latency\n'
-            ' ~echo <message>                        - Echos the message back\n'
-            ' ~set <name|pronouns|color> <value>     - Set your name, pronouns, or color\n'
-            ' ~flag <code>                           - Generate a flag based on the provided hex color code\n'
-            ' ~replay <lines>                        - Replay the last <lines> messages\n'
-           f' ~reboot                                - Reboot the bot ({dev_role_name} only)\n'
-            ' ~purge <type> <etc>                    - Delete messages according to the specified type and parameters\n'
-           f' ~role add <member> <role>              - Add a role to a member ({mod_role_name} only)\n'
-           f' ~role remove <member> <role>           - Remove a role from a member ({mod_role_name} only)\n'
-            '```',
-            message.channel
-        )
+        if args and args[0]in["--more","-m"]:
+            userprompt=' '.join(args[1:]) if len(args)>1 else []
+            if userprompt:
+                response=await echo("Loading...",message.channel)
+                response_data=await ollama.generate(model='dolphin-mistral',prompt=prismprompt+f"This question was asked by {message.author.display_name}"+userprompt)
+                await response.edit(content=response_data['response'])
+            await echo("To use this help command, simply type \"~help -m\" followed by your question.",message.channel)
+        else:
+            await echo(
+                '```markdown\n'
+                ' ≈Available commands: \n'
+                ' ~help                                  - Show this help message\n'
+                ' ~help --more                           - Get more help\n'
+                ' ~ping                                  - Get the bot\'s latency\n'
+                ' ~echo <message>                        - Echos the message back\n'
+                ' ~set <name|pronouns|color> <value>     - Set your name, pronouns, or color\n'
+                ' ~flag <code>                           - Generate a flag based on the provided hex color code\n'
+                ' ~replay <lines>                        - Replay the last <lines> messages\n'
+            f' ~reboot                                - Reboot the bot ({dev_role_name} only)\n'
+                ' ~purge <type> <etc>                    - Delete messages according to the specified type and parameters\n'
+            f' ~role add <member> <role>              - Add a role to a member ({mod_role_name} only)\n'
+            f' ~role remove <member> <role>           - Remove a role from a member ({mod_role_name} only)\n'
+                '```',
+                message.channel
+            )
     elif cmd=="ping":
         start_time=perf_counter()
         pong=await echo("Pong! (calculating, please wait...)",message.channel)
