@@ -18,18 +18,18 @@ async def on_ready():
     await client.get_channel(1556028288865018047).send("Reflection: Waves can reflect from surfaces. Think before you send something, because once you've put something into a public channel, other people can see, quote, or respond to it. Don't use that as an excuse to post private information or harmful content.")
     await client.get_channel(1556028288865018047).send("Resonance: When a system is driven at the right frequency, its response can become dangerously large. Do not attempt to exploit, raid, crash, spam, or otherwise deliberately overwhelm the server. Don't bypass security systems or automod filters. If you try to make the server resonate, you'll probably discover that the moderation team also has a frequency.")
 #client.run(TOKEN)
-#commands=[]
-#points=300
-#for i in range(points+1):
-#    x=i/(points/5)
-#    y=math.sin(x**2)
-#    sx=x*20
-#    sy=90-10*y
-#    commands.append(f"{'M' if i==0 else 'L'} {sx:.2f} {sy:.2f}")
-#print('<path d="' + " ".join(commands) + '" fill="none" stroke="white" stroke-width="2"/>')
+commands=[]
+points=300
+for i in range(points+1):
+    x=i/(points/5)
+    y=math.sin(x**2)
+    sx=x*20
+    sy=90-10*y
+    commands.append(f"{'M' if i==0 else 'L'} {sx:.2f} {sy:.2f}")
+print('<path d="' + " ".join(commands) + '" fill="none" stroke="white" stroke-width="2"/>')
 import ollama
 response=ollama.generate(
     model='dolphin-mistral', 
-    prompt='im testing to see if this works; reply with the word "pussy" if you can see this'
+    prompt='im testing to see if this works; reply with the word "cat" if you can see this'
 )
 print(response['response'])

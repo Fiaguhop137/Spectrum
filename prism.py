@@ -18,8 +18,8 @@ ollama=AsyncClient()
 spectrum_server_id=1511895185007579206
 spectrum_channel_id=1534523744779763823
 mod_channel_id=1534523821762281602
-dev_role_name="infrared"
 member_role_name="ultraviolet"
+dev_role_name="infrared"
 owner_role_name="radio"
 mod_role_name="xray"
 banned_words=[
@@ -34,6 +34,7 @@ banned_words=[
     "easton",
     "amara",
     "zou",
+    "67",
 ]
 with open(__file__, "r", encoding="utf-8") as self:
     prismprompt="You are a helpful assistant named Prism. Your job is to help users with their questions for the Spectrum discord server. Keep in mind that you should keep your responses concise and helpful. Here is how prism works: "+self.read()
