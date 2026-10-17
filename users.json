@@ -146,12 +146,13 @@
     },
     "1552453344281370756": {
         "name": "Ben",
-        "pronouns": "he/him",
-        "color": "FF00FF",
+        "pronouns": "stupid",
+        "color": "3F4BBF",
         "offenses": "0",
         "roles": [
+            "ultraviolet",
             "infrared",
-            "ultraviolet"
+            "xray"
         ]
     },
     "1008776202191634432": {
@@ -214,6 +215,13 @@
         ]
     },
     "429457053791158281": {
+        "name": "unknown",
+        "pronouns": "try ~set or ~help",
+        "color": "000000",
+        "offenses": "0",
+        "roles": []
+    },
+    "1560804659495444540": {
         "name": "unknown",
         "pronouns": "try ~set or ~help",
         "color": "000000",
