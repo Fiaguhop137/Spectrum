@@ -229,5 +229,16 @@
         "color": "000000",
         "offenses": "0",
         "roles": []
+    },
+    "1560989911765483685": {
+        "name": "Ben",
+        "pronouns": "Imstillbanned",
+        "color": "000000",
+        "offenses": "0",
+        "roles": [
+            "ultraviolet",
+            "xray",
+            "infrared"
+        ]
     }
 }
