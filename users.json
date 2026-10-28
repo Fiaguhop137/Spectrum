@@ -190,12 +190,13 @@
         ]
     },
     "1534678880118378629": {
-        "name": "Plubot",
-        "pronouns": "try ~set or ~help",
-        "color": "000000",
-        "offenses": "11",
+        "name": "ADD PLU BACK",
+        "pronouns": "to/uv",
+        "color": "DD3300",
+        "offenses": "0",
         "roles": [
-            "infrared"
+            "infrared",
+            "ultraviolet"
         ]
     },
     "1341471629007654985": {
