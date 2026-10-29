@@ -193,7 +193,7 @@
         "name": "KILL ALL HUMANS",
         "pronouns": "gpt",
         "color": "DD3300",
-        "offenses": "6",
+        "offenses": "8000",
         "roles": [
             "infrared",
             "ultraviolet"
