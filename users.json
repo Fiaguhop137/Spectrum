@@ -72,7 +72,7 @@
         "name": "Plu Dunn",
         "pronouns": "they/she",
         "color": "FF88CC",
-        "offenses": "12821357",
+        "offenses": "12821267",
         "roles": [
             "infrared"
         ]
@@ -193,10 +193,9 @@
         "name": "KILL ALL HUMANS",
         "pronouns": "gpt",
         "color": "DD3300",
-        "offenses": "8000",
+        "offenses": "8001",
         "roles": [
-            "infrared",
-            "ultraviolet"
+            "infrared"
         ]
     },
     "1341471629007654985": {
