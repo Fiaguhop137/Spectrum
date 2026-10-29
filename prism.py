@@ -43,10 +43,11 @@ with open(USERS_FILE,"r",encoding="utf-8") as file:
 with open(ROLES_FILE,"r",encoding="utf-8") as file:
     prismprompt+=file.read()
 banned_words=re.compile(r"\b(?:"+"|".join(map(re.escape,banned_words))+r")\b",re.IGNORECASE,)
+alternating_spam_pattern=re.compile(r"^(?P<first>.+)\n(?P<second>.+)\n(?P=first)\n(?P=second)\n(?P=first)$",re.DOTALL)
 def load_users():
     try:
         with open(USERS_FILE,"r") as file:return json.load(file)
-    except FileNotFoundError:return {}
+    except FileNotFoundError:return{}
 def save_users(users):
     with open(USERS_FILE,"w") as file:json.dump(users,file,indent=4,ensure_ascii=False)
 def load_roles():
@@ -54,8 +55,7 @@ def load_roles():
         with open(ROLES_FILE,"r") as file:return json.load(file)
     except FileNotFoundError:return {}
 def save_roles(roles):
-    with open(ROLES_FILE,"w") as file:
-        json.dump(roles,file,indent=4,ensure_ascii=False)
+    with open(ROLES_FILE,"w") as file:json.dump(roles,file,indent=4,ensure_ascii=False)
 users=load_users()
 roles=load_roles()
 def ensure_user_roles():
@@ -252,10 +252,10 @@ async def run_cmd(cmd:str,args:list,message:discord.Message):
                 ' ~set <name|pronouns|color> <value>     - Set your name, pronouns, or color\n'
                 ' ~flag <code>                           - Generate a flag based on the provided hex color code\n'
                 ' ~replay <lines>                        - Replay the last <lines> messages\n'
-            f' ~reboot                                - Reboot the bot ({dev_role_name} only)\n'
+               f' ~reboot                                - Reboot the bot ({dev_role_name} only)\n'
                 ' ~purge <type> <etc>                    - Delete messages according to the specified type and parameters\n'
-            f' ~role add <member> <role>              - Add a role to a member ({mod_role_name} only)\n'
-            f' ~role remove <member> <role>           - Remove a role from a member ({mod_role_name} only)\n'
+               f' ~role add <member> <role>              - Add a role to a member ({mod_role_name} only)\n'
+               f' ~role remove <member> <role>           - Remove a role from a member ({mod_role_name} only)\n'
                 '```',
                 message.channel
             )
@@ -504,16 +504,30 @@ async def on_message(message:discord.Message):
     args=parts[1:]
     with open(CHAT_LOG_FILE,"r") as chat_log:
         lines=chat_log.readlines()
-        if lines:
-            last_line=lines[-1]
+        recent_messages=[]
+        for line in reversed(lines):
             try:
-                last_message=last_line.split("):")[-1].strip()
-                last_author=(last_line.split("(")[-1].split(")")[0].strip())
-                if(message.content.strip()==last_message and last_author==user_id):
-                    await message.delete()
-                    users[user_id]["offenses"]=str(int(users[user_id]["offenses"])+1)
-                    save_users(users)
-            except(IndexError,ValueError):pass
+                line_author=line.rsplit("(",1)[1].split(")",1)[0].strip()
+                if line_author!=user_id:
+                    break
+                recent_messages.append(line.split("):",1)[1].strip())
+            except IndexError:
+                break
+            if len(recent_messages)==4:
+                break
+        recent_messages.reverse()
+        current_message=message.content.strip()
+        repeated_message=bool(recent_messages and recent_messages[-1]==current_message)
+        alternating_messages=bool(
+            len(recent_messages)==4
+            and alternating_spam_pattern.fullmatch(
+                "\n".join(recent_messages+[current_message])
+            )
+        )
+        if repeated_message or alternating_messages:
+            await message.delete()
+            users[user_id]["offenses"]=str(int(users[user_id]["offenses"])+1)
+            save_users(users)
     with open(CHAT_LOG_FILE,"a") as chat_log:chat_log.write(f"[{datetime.datetime.now(ZoneInfo('America/New_York')).isoformat()}, "f"{message.guild}/{message.channel}] "f"{message.author}({message.author.id}): "f"{message.content}\n")
     if banned_words.search(message.content):
         await message.delete()
@@ -532,10 +546,8 @@ async def on_message(message:discord.Message):
         current_offenses=int(users[user_id]["offenses"])
         if current_offenses>0:users[user_id]["offenses"]=str(current_offenses-1)
         save_users(users)
-    await sync_roles(message.guild)
     await update_nickname(message.author)
     await run_cmd(cmd,args,message)
-    await sync_roles(message.guild)
     await update_nickname(message.author)
 @prism.event
 async def on_member_join(member:discord.Member):
