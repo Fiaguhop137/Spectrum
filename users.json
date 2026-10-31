@@ -69,10 +69,10 @@
         ]
     },
     "1512533966001930254": {
-        "name": "Plu Dunn",
-        "pronouns": "they/she",
-        "color": "FF88CC",
-        "offenses": "12821267",
+        "name": "Ultraviolet",
+        "pronouns": "u/v",
+        "color": "000000",
+        "offenses": "12821210",
         "roles": [
             "infrared"
         ]
@@ -238,6 +238,16 @@
         "roles": [
             "ultraviolet",
             "xray",
+            "infrared"
+        ]
+    },
+    "1307326074727825589": {
+        "name": "unknown",
+        "pronouns": "try ~set or ~help",
+        "color": "000000",
+        "offenses": "0",
+        "roles": [
+            "ultraviolet",
             "infrared"
         ]
     }
