@@ -69,12 +69,13 @@
         ]
     },
     "1512533966001930254": {
-        "name": "Ultraviolet",
-        "pronouns": "u/v",
-        "color": "000000",
-        "offenses": "12821201",
+        "name": "Plu",
+        "pronouns": "they/them",
+        "color": "FF88CC",
+        "offenses": "12821145",
         "roles": [
-            "infrared"
+            "infrared",
+            "ultraviolet"
         ]
     },
     "789314712990384168": {
@@ -237,7 +238,6 @@
         "offenses": "0",
         "roles": [
             "ultraviolet",
-            "xray",
             "infrared"
         ]
     },
