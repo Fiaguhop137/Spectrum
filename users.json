@@ -98,7 +98,7 @@
             "ultraviolet"
         ]
     },
-    "1292531498695524470": {
+    "1566618422060650590": {
         "name": "Twi",
         "pronouns": "she/her (for now)",
         "color": "527CE9",
@@ -250,12 +250,5 @@
             "ultraviolet",
             "infrared"
         ]
-    },
-    "1566618422060650590": {
-        "name": "unknown",
-        "pronouns": "try ~set or ~help",
-        "color": "000000",
-        "offenses": "0",
-        "roles": []
     }
 }
