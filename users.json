@@ -69,10 +69,10 @@
         ]
     },
     "1512533966001930254": {
-        "name": "Liberal 🇺🇸",
-        "pronouns": "neo",
-        "color": "0044FF",
-        "offenses": "12820901",
+        "name": "plu",
+        "pronouns": "they/them",
+        "color": "FF88CC",
+        "offenses": "12820844",
         "roles": [
             "infrared",
             "ultraviolet"
@@ -196,7 +196,8 @@
         "color": "DD3300",
         "offenses": "8001",
         "roles": [
-            "infrared"
+            "infrared",
+            "ultraviolet"
         ]
     },
     "1341471629007654985": {
@@ -250,6 +251,15 @@
         "roles": [
             "ultraviolet",
             "infrared"
+        ]
+    },
+    "1533157532510584894": {
+        "name": "unknown",
+        "pronouns": "try ~set or ~help",
+        "color": "000000",
+        "offenses": "0",
+        "roles": [
+            "ultraviolet"
         ]
     }
 }
