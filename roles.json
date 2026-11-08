@@ -1,6 +1,22 @@
 {
-    "ultraviolet":{"permissions":1791090520088257},
-    "infrared":{"permissions":1791091056959169},
-    "xray":{"permissions":1118734262576},
-    "radio":{"permissions":8}
+    "ultraviolet":{
+        "name":"ultraviolet",
+        "permissions":1791090520088257,
+        "short":"uv"
+    },
+    "infrared":{
+        "name":"infrared",
+        "permissions":1791091056959169,
+        "short":"ir"
+    },
+    "xray":{
+        "name":"xray",
+        "permissions":1118734262576,
+        "short":"xy"
+    },
+    "radio":{
+        "name":"radio",
+        "permissions":8,
+        "short":"rd"
+    }
 }

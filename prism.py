@@ -222,6 +222,15 @@ async def update_nickname(member:discord.Member):
             save_users(users)
 def has_role(member,role_name):
     return any(role.name==role_name for role in member.roles)
+def resolve_role(role_identifier:str):
+    clean_name=role_identifier.strip("<@&>")
+    if clean_name in roles:
+        return clean_name
+    lower_ident=role_identifier.lower()
+    for role_data in roles.values():
+        if role_data.get("short")==lower_ident:
+            return role_data.get("name")
+    return None
 def resolve_member(guild:discord.Guild,member_identifier:str):
     member_identifier=member_identifier.strip("<@!>")
     member=guild.get_member(int(member_identifier))if member_identifier.isdigit()else None
@@ -254,8 +263,7 @@ async def run_cmd(cmd:str,args:list,message:discord.Message):
                 ' ~replay <lines>                        - Replay the last <lines> messages\n'
                f' ~reboot                                - Reboot the bot ({dev_role_name} only)\n'
                 ' ~purge <type> <etc>                    - Delete messages according to the specified type and parameters\n'
-               f' ~role add <member> <role>              - Add a role to a member ({mod_role_name} only)\n'
-               f' ~role remove <member> <role>           - Remove a role from a member ({mod_role_name} only)\n'
+               f' ~role <tgl|shw|add|del> <role> <user>  - Edit a member\'s roles ({mod_role_name} only)\n'
                 '```',
                 message.channel
             )
@@ -268,6 +276,7 @@ async def run_cmd(cmd:str,args:list,message:discord.Message):
         await message.delete()
         await echo(" ".join(args),message.channel)
     elif cmd=="set":
+        if any(char in "".join(args) for char in ("|","<",">")):await echo("There's about a 80% chance you just tried to literally type ~set <bob|he/him|red> or something like that. I'd like to first imform you that you are an idiot. Secondly, the correct commands are ~set name bob, ~set pronouns he/him, or ~set color ff0000. Please try again.",message.channel)
         if len(args)<2:
             await echo("Usage: ~set <name|pronouns|color> <value>",message.channel)
             return
@@ -421,48 +430,70 @@ async def run_cmd(cmd:str,args:list,message:discord.Message):
             await echo(f"Deleted {len(deleted)} messages.",message.channel)
     elif cmd=="role":
         if not args:
-            await echo("Usage: ~role <add|remove|new|delete> <args>",message.channel)
+            await echo("Usage: ~role <add|remove|new|delete> <role> <member>",message.channel)
             return
         action=args[0].lower()
-        if action=="add":
+        role_name=resolve_role(args[1] if len(args)>1 else "")
+        member=resolve_member(message.guild," ".join(args[2:]) if len(args)>2 else "")
+        if member is None:
+            return await echo("Member not found.",message.channel)
+        if action in ("add","del","shw","tgl"):
             if len(args)<3:
-                return await echo("Usage: ~role add <member> <role>",message.channel)
-            if not has_role(message.author,mod_role_name):return await echo(f"You need the {mod_role_name} role to use this command.",message.channel)
-            member=resolve_member(message.guild,args[1])
-            if member is None:
-                return await echo("Member not found.",message.channel)
-            role_name=" ".join(args[2:])
-            if role_name not in roles:return await echo(f"Role `{role_name}` does not exist.",message.channel)
-            user_id=str(member.id)
-            if user_id not in users:
-                users[user_id]={"name":"unknown","pronouns":"try ~set or ~help","color":"000000","offenses":"0","roles":[]}
-            if "roles" not in users[user_id]:
-                users[user_id]["roles"]=[]
-            if role_name in users[user_id]["roles"]:
-                return await echo(f"{member.mention} already has `{role_name}`.",message.channel)
-            users[user_id]["roles"].append(role_name)
-            save_users(users)
-            await sync_roles(message.guild)
-            await echo(f"Added `{role_name}` to {member.mention}.",message.channel)
-        elif action=="remove":
-            if len(args)<3:
-                return await echo("Usage: ~role remove <member> <role>",message.channel)
-            if not has_role(message.author,mod_role_name):
-                return await echo(f"You need the {mod_role_name} role to use this command.",message.channel)
-            member=resolve_member(message.guild,args[1])
-            if member is None:
-                return await echo("Member not found.",message.channel)
-            role_name=" ".join(args[2:])
-            if member.id.__str__() not in users:
-                return await echo(f"{member.mention} has no stored roles.",message.channel)
-            user_id=str(member.id)
-            if role_name not in users[user_id].get("roles",[]):
-                return await echo(f"{member.mention} does not have `{role_name}`.",message.channel)
-            users[user_id]["roles"].remove(role_name)
-            save_users(users)
-            await sync_roles(message.guild)
-            await echo(f"Removed `{role_name}` from {member.mention}.",message.channel)
-        else:await echo("Usage: ~role <add|remove|new|delete> <args>",message.channel)
+                await echo(f"Usage: ~role {action} <role> <member>",message.channel)
+                return
+            elif action=="add":
+                if not has_role(message.author,mod_role_name):return await echo(f"You need the {mod_role_name} role to use this command.",message.channel)
+                if role_name is None: return await echo("Role not found.",message.channel)
+                user_id=str(member.id)
+                if user_id not in users:
+                    users[user_id]={"name":"unknown","pronouns":"try ~set or ~help","color":"000000","offenses":"0","roles":[]}
+                if "roles" not in users[user_id]:
+                    users[user_id]["roles"]=[]
+                if role_name in users[user_id]["roles"]:
+                    return await echo(f"{member.mention} already has `{role_name}`.",message.channel)
+                users[user_id]["roles"].append(role_name)
+                save_users(users)
+                await sync_roles(message.guild)
+                await echo(f"Added `{role_name}` to {member.mention}.",message.channel)
+            elif action=="del":
+                if not has_role(message.author,mod_role_name):return await echo(f"You need the {mod_role_name} role to use this command.",message.channel)
+                if role_name is None: return await echo("Role not found.",message.channel)
+                user_id=str(member.id)
+                if user_id not in users or "roles" not in users[user_id] or role_name not in users[user_id]["roles"]:
+                    return await echo(f"{member.mention} does not have `{role_name}`.",message.channel)
+                users[user_id]["roles"].remove(role_name)
+                save_users(users)
+                await sync_roles(message.guild)
+                await echo(f"Removed `{role_name}` from {member.mention}.",message.channel)
+            elif action=="shw":
+                user_id=str(member.id)
+                if role_name==None:
+                    if user_id not in users or "roles" not in users[user_id] or not users[user_id]["roles"]:
+                        return await echo(f"{member.mention} has no roles.",message.channel)
+                    role_list=", ".join(f"`{role}`" for role in users[user_id]["roles"])
+                    await echo(f"{member.mention} has the following roles: {role_list}",message.channel)
+                else:
+                    if user_id not in users or "roles" not in users[user_id] or role_name not in users[user_id]["roles"]:
+                        return await echo(f"{member.mention} does not have `{role_name}`.",message.channel)
+                    await echo(f"{member.mention} has `{role_name}`.",message.channel)
+            elif action=="tgl":
+                if not has_role(message.author,mod_role_name):return await echo(f"You need the {mod_role_name} role to use this command.",message.channel)
+                if role_name is None: return await echo("Role not found.",message.channel)
+                user_id=str(member.id)
+                if user_id not in users:
+                    users[user_id]={"name":"unknown","pronouns":"try ~set or ~help","color":"000000","offenses":"0","roles":[]}
+                if "roles" not in users[user_id]:
+                    users[user_id]["roles"]=[]
+                if role_name in users[user_id]["roles"]:
+                    users[user_id]["roles"].remove(role_name)
+                    action_taken="removed"
+                else:
+                    users[user_id]["roles"].append(role_name)
+                    action_taken="added"
+                save_users(users)
+                await sync_roles(message.guild)
+                await echo(f"{action_taken.capitalize()} `{role_name}` for {member.mention}.",message.channel)
+            else:await echo("Usage: ~role <tgl|shw|add|del> <args>",message.channel)
     else:await echo(f"Unknown command: {cmd}. Type ~help for a list of commands.",message.channel)
 @prism.event
 async def on_guild_join(server:discord.Guild):
