@@ -260,5 +260,12 @@
         "roles": [
             "ultraviolet"
         ]
+    },
+    "510016054391734273": {
+        "name": "unknown",
+        "pronouns": "try ~set or ~help",
+        "color": "000000",
+        "offenses": "0",
+        "roles": []
     }
 }
