@@ -35,6 +35,8 @@ banned_words=[
     "amara",
     "zou",
     "67",
+    "cracka",
+    "nilla",
 ]
 with open(__file__, "r", encoding="utf-8") as self:
     prismprompt="You are a helpful assistant named Prism. Your job is to help users with their questions for the Spectrum discord server. Keep in mind that you should keep your responses concise and helpful. Here is how prism works: "+self.read()
