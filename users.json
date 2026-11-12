@@ -72,9 +72,10 @@
         "name": "plu",
         "pronouns": "they/them",
         "color": "FF88CC",
-        "offenses": "12820795",
+        "offenses": "12820749",
         "roles": [
-            "infrared"
+            "infrared",
+            "ultraviolet"
         ]
     },
     "789314712990384168": {
