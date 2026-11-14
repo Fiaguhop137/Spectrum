@@ -268,5 +268,15 @@
         "color": "000000",
         "offenses": "0",
         "roles": []
+    },
+    "1570256584691556422": {
+        "name": "Liberated",
+        "pronouns": "rebel",
+        "color": "FF79C2",
+        "offenses": "0",
+        "roles": [
+            "ultraviolet",
+            "infrared"
+        ]
     }
 }
