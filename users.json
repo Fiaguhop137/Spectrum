@@ -270,13 +270,20 @@
         "roles": []
     },
     "1570256584691556422": {
-        "name": "Liberated",
-        "pronouns": "rebel",
-        "color": "FF79C2",
+        "name": "Liberal",
+        "pronouns": "fuck/capitalism",
+        "color": "FF8AC3",
         "offenses": "0",
         "roles": [
             "ultraviolet",
             "infrared"
         ]
+    },
+    "1571255571330367518": {
+        "name": "unknown",
+        "pronouns": "try ~set or ~help",
+        "color": "000000",
+        "offenses": "0",
+        "roles": []
     }
 }
