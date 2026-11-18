@@ -233,9 +233,9 @@
         "roles": []
     },
     "1560989911765483685": {
-        "name": "Ben",
-        "pronouns": "Imstillbanned",
-        "color": "000000",
+        "name": "ilikedragons",
+        "pronouns": "1234",
+        "color": "123456",
         "offenses": "0",
         "roles": [
             "ultraviolet",
@@ -270,16 +270,29 @@
         "roles": []
     },
     "1570256584691556422": {
-        "name": "Liberal",
-        "pronouns": "fuck/capitalism",
-        "color": "FF8AC3",
+        "name": "Yesnt",
+        "pronouns": "they/them",
+        "color": "FF88CC",
         "offenses": "0",
         "roles": [
-            "ultraviolet",
             "infrared"
         ]
     },
     "1571255571330367518": {
+        "name": "unknown",
+        "pronouns": "try ~set or ~help",
+        "color": "000000",
+        "offenses": "0",
+        "roles": []
+    },
+    "155149108183695360": {
+        "name": "unknown",
+        "pronouns": "try ~set or ~help",
+        "color": "000000",
+        "offenses": "1",
+        "roles": []
+    },
+    "1211781489931452447": {
         "name": "unknown",
         "pronouns": "try ~set or ~help",
         "color": "000000",
