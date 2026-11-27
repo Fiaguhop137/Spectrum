@@ -336,7 +336,13 @@ async def run_cmd(cmd:str,args:list,message:discord.Message):
         except FileNotFoundError:
             await echo("No chat log found.",message.channel)
             return
-        await echo(chat_logs,prism.get_channel(logs_channel_id))
+        try:
+            await echo(chat_logs,prism.get_channel(logs_channel_id))
+        except Exception as e:
+            await echo(f"Failed to flush chat log: {e}",message.channel)
+            return
+        with open(CHAT_LOG_FILE,"w") as chat_log:
+            chat_log.write("")
     elif cmd=="reboot":
         if not has_role(message.author,dev_role_name):
             await echo("You are not authorized to use this command.",message.channel)
