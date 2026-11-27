@@ -565,6 +565,7 @@ async def on_message(message:discord.Message):
                 return
         except FileNotFoundError:
             await echo("No chat log found.",message.channel)
+            return
         with open(CHAT_LOG_FILE,"w") as chat_log:
             chat_log.write("")
     with open(CHAT_LOG_FILE,"a") as chat_log:
