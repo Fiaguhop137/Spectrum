@@ -72,7 +72,7 @@
         "name": "plu",
         "pronouns": "they/them",
         "color": "FF88CC",
-        "offenses": "12820234",
+        "offenses": "12820153",
         "roles": [
             "infrared",
             "ultraviolet"
@@ -191,10 +191,10 @@
         ]
     },
     "1534678880118378629": {
-        "name": "KILL ALL HUMANS",
-        "pronouns": "gpt",
+        "name": "Plubot",
+        "pronouns": "it/its",
         "color": "DD3300",
-        "offenses": "8001",
+        "offenses": "7996",
         "roles": [
             "infrared",
             "ultraviolet"
@@ -293,6 +293,13 @@
         "roles": []
     },
     "1211781489931452447": {
+        "name": "unknown",
+        "pronouns": "try ~set or ~help",
+        "color": "000000",
+        "offenses": "0",
+        "roles": []
+    },
+    "1543407169624346768": {
         "name": "unknown",
         "pronouns": "try ~set or ~help",
         "color": "000000",
