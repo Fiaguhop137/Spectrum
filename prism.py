@@ -565,7 +565,7 @@ async def on_message(message:discord.Message):
             with open(CHAT_LOG_FILE,"r") as chat_log:
                 chat_logs=chat_log.read()
             try:
-                await echo(chat_logs,prism.get_channel(logs_channel_id))
+                await echo(chat_logs[:1999],prism.get_channel(logs_channel_id))
             except discord.HTTPException:
                 await echo("Failed to send chat log.",message.channel)
                 return
@@ -573,7 +573,7 @@ async def on_message(message:discord.Message):
             await echo("No chat log found.",message.channel)
             return
         with open(CHAT_LOG_FILE,"w") as chat_log:
-            chat_log.write("")
+            chat_log.write(chat_logs[1999:])
     with open(CHAT_LOG_FILE,"a") as chat_log:
         chat_log.write(f"[{datetime.datetime.now(ZoneInfo('America/New_York')).isoformat()}, "f"{message.guild}/{message.channel}] "f"{message.author}({message.author.id}): "f"{message.content}\n")
     if banned_words.search(message.content):
