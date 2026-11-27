@@ -18,6 +18,7 @@ ollama=AsyncClient()
 spectrum_server_id=1511895185007579206
 spectrum_channel_id=1534523744779763823
 mod_channel_id=1534523821762281602
+logs_channel_id=1575696146649710662
 member_role_name="ultraviolet"
 dev_role_name="infrared"
 owner_role_name="radio"
@@ -32,14 +33,13 @@ banned_words=[
     "maoist",
     "neomao",
     "easton",
-    "amara",
     "zou",
     "67",
     "cracka",
     "nilla",
 ]
 with open(__file__, "r", encoding="utf-8") as self:
-    prismprompt="You are a helpful assistant named Prism. Your job is to help users with their questions for the Spectrum discord server. Keep in mind that you should keep your responses concise and helpful. Here is how prism works: "+self.read()
+    prismprompt="You are a helpful assistant named Prism. Your job is to help users with their questions for the Spectrum discord server. Keep in mind that you should keep your responses concise and helpful. No other bots are installed in this server, and only the following information is relavant. Do not provide any information that is not in the following context. Here is how prism works: "+self.read()
 with open(USERS_FILE,"r",encoding="utf-8") as file:
     prismprompt+=file.read()
 with open(ROLES_FILE,"r",encoding="utf-8") as file:
@@ -262,7 +262,7 @@ async def run_cmd(cmd:str,args:list,message:discord.Message):
                 ' ~echo <message>                        - Echos the message back\n'
                 ' ~set <name|pronouns|color> <value>     - Set your name, pronouns, or color\n'
                 ' ~flag <code>                           - Generate a flag based on the provided hex color code\n'
-                ' ~replay <lines>                        - Replay the last <lines> messages\n'
+                ' ~flush                                 - Immediately send the entire log buffer\n'
                f' ~reboot                                - Reboot the bot ({dev_role_name} only)\n'
                 ' ~purge <type> <etc>                    - Delete messages according to the specified type and parameters\n'
                f' ~role <tgl|shw|add|del> <role> <user>  - Edit a member\'s roles ({mod_role_name} only)\n'
@@ -329,26 +329,14 @@ async def run_cmd(cmd:str,args:list,message:discord.Message):
             await echo(f"You can find the svg version "f"[here](<https://github.com/Fiaguhop137/Flags/blob/main/"f"special/generated/{message.author.name}/{code}.svg>)",message.channel)
         except ValueError as e:await echo(f"Invalid flag code: {e}",message.channel)
         except Exception as e:await echo(f"Failed to generate flag: {e}",message.channel)
-    elif cmd=="replay":
-        if not args:
-            await echo("Usage: ~replay <message count>",message.channel)
-            return
-        try:lines=int(args[0])
-        except ValueError:
-            await echo("Message count must be a valid integer.",message.channel)
-            return
+    elif cmd=="flush":
         try:
             with open(CHAT_LOG_FILE,"r") as chat_log:
-                chat_logs=chat_log.readlines()
+                chat_logs=chat_log.read()
         except FileNotFoundError:
             await echo("No chat log found.",message.channel)
             return
-        if lines<=0:
-            await echo("Message count must be a positive integer.",message.channel)
-            return
-        lines=min(lines,100,len(chat_logs))
-        for line in chat_logs[-lines:]:
-            await echo(line,message.channel)
+        await echo(chat_logs,prism.get_channel(logs_channel_id))
     elif cmd=="reboot":
         if not has_role(message.author,dev_role_name):
             await echo("You are not authorized to use this command.",message.channel)
@@ -561,7 +549,26 @@ async def on_message(message:discord.Message):
             await message.delete()
             users[user_id]["offenses"]=str(int(users[user_id]["offenses"])+1)
             save_users(users)
-    with open(CHAT_LOG_FILE,"a") as chat_log:chat_log.write(f"[{datetime.datetime.now(ZoneInfo('America/New_York')).isoformat()}, "f"{message.guild}/{message.channel}] "f"{message.author}({message.author.id}): "f"{message.content}\n")
+    flush_flag=False
+    with open(CHAT_LOG_FILE,"r") as chat_log:
+        chars=chat_log.read()
+        if len(chars)>1000:
+            flush_flag=True
+    if flush_flag:
+        try:
+            with open(CHAT_LOG_FILE,"r") as chat_log:
+                chat_logs=chat_log.read()
+            try:
+                await echo(chat_logs,prism.get_channel(logs_channel_id))
+            except discord.HTTPException:
+                await echo("Failed to send chat log.",message.channel)
+                return
+        except FileNotFoundError:
+            await echo("No chat log found.",message.channel)
+        with open(CHAT_LOG_FILE,"w") as chat_log:
+            chat_log.write("")
+    with open(CHAT_LOG_FILE,"a") as chat_log:
+        chat_log.write(f"[{datetime.datetime.now(ZoneInfo('America/New_York')).isoformat()}, "f"{message.guild}/{message.channel}] "f"{message.author}({message.author.id}): "f"{message.content}\n")
     if banned_words.search(message.content):
         await message.delete()
         await echo(f"{message.author.mention}, that message was flagged as offensive, inappropriate, and/or vulgar. Ping a {mod_role_name} if you believe this is a mistake.",message.channel)
