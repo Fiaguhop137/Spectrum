@@ -72,7 +72,7 @@
         "name": "plu",
         "pronouns": "they/them",
         "color": "FF88CC",
-        "offenses": "904",
+        "offenses": "875",
         "roles": [
             "infrared",
             "ultraviolet"
@@ -192,9 +192,9 @@
     },
     "1534678880118378629": {
         "name": "Plubot",
-        "pronouns": "it/its",
-        "color": "DD3300",
-        "offenses": "7996",
+        "pronouns": "neo",
+        "color": "FF88CC",
+        "offenses": "7990",
         "roles": [
             "infrared",
             "ultraviolet"
